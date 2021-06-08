@@ -137,10 +137,10 @@ def send_mail(to: str, body_dict: dict, error=False, error_mail_subject=None):
         rating = body_dict['rating']
         comment = body_dict['comment']
 
-        mail.Subject = f'Review nou de {rating} â˜…'
+        mail.Subject = f'Review nou de {rating} ★'
         mail.Body = ''
         mail.HTMLBody = f'''
-            <h3 align="center">In data de {date}, la ora {time} ati primit un review de {rating} â˜… de la {name}, <a href="tel:{phone}">{phone}</a></h3>
+            <h3 align="center">In data de {date}, la ora {time} ati primit un review de {rating} ★ de la {name}, <a href="tel:{phone}">{phone}</a></h3>
             <h4 align="center">Numar comanda: <a href="https://eucemananc.ro/supplier/orders/details/{order_no[1:]}">{order_no}</a></h4>
                         '''
 
