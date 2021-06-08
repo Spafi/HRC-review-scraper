@@ -11,7 +11,6 @@ from datetime import datetime
 import datetime as date
 
 
-
 # TK WINDOW START ----------------------------------------------
 window = tk.Tk()
 
@@ -41,7 +40,8 @@ default_mails.set('Cristian.Spafiu@hardrockcafe.ro; Marius.Baban@hardrockcafe.ro
                   'Paul.Iacob@hardrockcafe.ro; Corneliu.Carstea@Hardrockcafe.ro')
 
 
-mails = Entry(window, width=250, font=Font(family='Helvetica', size=13), textvariable=default_mails)
+mails = Entry(window, width=250, font=Font(
+    family='Helvetica', size=13), textvariable=default_mails)
 mails.grid(column=0, row=3, pady=5, padx=5)
 
 txt = scrolledtext.ScrolledText(window, width=40, height=10)
@@ -54,11 +54,6 @@ txt.yview(END)
 # TK WINDOW END ----------------------------------------------
 
 
-
-
-
-
-
 MAX_ERRORS = 5
 RE_RUN_TIME_MS = 40000
 error_notification_sent = False
@@ -69,8 +64,8 @@ error_receiver = ''
 
 session = requests.Session()
 
-payload = {'email': ${{ secrets.EMAIL }},
-           'password': ${{ secrets.PASSWORD }},
+payload = {'email': '',
+           'password': '',
            'remember': 1
            }
 
@@ -92,22 +87,24 @@ def read_file(file):
 def write_log(text: str) -> str:
     with open("log.txt", "a") as f:
         if text == 'log':
-            f.write(f'Executed at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n')
+            f.write(
+                f'Executed at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n')
             return f'Executed at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n'
         elif text == 'error':
-            f.write(f'Error at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n')
+            f.write(
+                f'Error at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n')
             return f'Error at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n'
         elif text == 'sent':
-            f.write(f'Mail sent at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n')
+            f.write(
+                f'Mail sent at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n')
             return f'Mail sent at: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")} \n'
 
 
 def create_soup() -> dict:
     global page
-    # page = session.get(read_file('site.txt'))  # Testing purposes
     page = session.get('https://eucemananc.ro/supplier/reviews')
     soup = BeautifulSoup(page.content, "html.parser")
-    data_rows = soup.find_all("tr", limit=2)  # limit 2
+    data_rows = soup.find_all("tr", limit=2)  # limit the results of table rows to 2 since the one that we need is the second one
     body_dict = {}
 
     for index, data in enumerate(data_rows):
@@ -171,8 +168,10 @@ def send_mail(to: str, body_dict: dict, error=False, error_mail_subject=None):
     else:
         error_to_write = body_dict['error']
         mail.Subject = error_mail_subject
-        attachment = mail.Attachments.Add('C:/Users/Delivery/Pictures/error.png')
-        attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001F", "errorId")
+        attachment = mail.Attachments.Add(
+            'C:/Users/Delivery/Pictures/error.png')
+        attachment.PropertyAccessor.SetProperty(
+            "http://schemas.microsoft.com/mapi/proptag/0x3712001F", "errorId")
         mail.Body = ''
         mail.HTMLBody = f'''
                     <div align="center">
@@ -199,7 +198,8 @@ def send_review_mail():
         error_count += 1
         txt.insert(END, write_log('error'), 'error')
         txt.yview(END)
-        error_body_dict = {'error': f'''Oh no! We have an error getting the reviews. Trying to resolve it...'''}
+        error_body_dict = {
+            'error': f'''Oh no! We have an error getting the reviews. Trying to resolve it...'''}
 
         if not error_notification_sent:
             send_mail(error_receiver,
@@ -211,7 +211,8 @@ def send_review_mail():
         if error_count < MAX_ERRORS:
             window.after(RE_RUN_TIME_MS, send_review_mail)
         elif error_count == MAX_ERRORS:
-            error_not_resolved = {'error': f'''APPLICATION STOPPED! We encountered an error that couldn't be resolved! Call Spaf...'''}
+            error_not_resolved = {
+                'error': f'''APPLICATION STOPPED! We encountered an error that couldn't be resolved! Call Spaf...'''}
             send_mail(receiver_list,
                       body_dict=error_not_resolved,
                       error=True,
@@ -232,7 +233,8 @@ def send_review_mail():
         window.after(RE_RUN_TIME_MS, send_review_mail)
 
 
-btn = Button(window, text="Run program", font=Font(family='Helvetica', size=12), command=send_review_mail)
+btn = Button(window, text="Run program", font=Font(
+    family='Helvetica', size=12), command=send_review_mail)
 btn.grid(column=0, row=2, columnspan=2, pady=10, padx=10)
 
 window.mainloop()
